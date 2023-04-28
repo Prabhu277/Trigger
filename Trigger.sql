@@ -1,3 +1,4 @@
+-- DML Commands
 create table emp (employee_id number,
 emp_name varchar2(20), salary number, designation varchar2(20));
 /
@@ -62,4 +63,36 @@ update emp set salary = 35000 where emp_name = 'Raja';
 delete from emp where employee_id = 7;
 /
 commit;
+/
+
+-- DDL Commands
+
+create table schema_audit
+(
+    ddl_date Date,
+    ddl_user varchar2(20),
+    object_created varchar2(20),
+    object_name varchar2(20),
+    ddl_operation varchar2(20)
+);
+
+/
+
+create or replace trigger trg_ddl
+after ddl on schema
+begin
+    Insert into schema_audit values(
+    sysdate,
+    sys_context ('Userenv','current_user'),
+    ora_dict_obj_type,
+    ora_dict_obj_name,
+    ora_sysevent
+    );
+End;
+/
+create table event(v_num number);
+/
+select * from schema_audit;
+/
+truncate table schema_audit;
 /
