@@ -96,3 +96,32 @@ select * from schema_audit;
 /
 truncate table schema_audit;
 /
+-- Login Trigger (Schema Level Trigger)
+create table event_audit
+(
+    event_type varchar2(20),
+    logon_date DATE,
+    logon_time varchar2(20),
+    logof_date Date,
+    logof_time varchar2(20)
+);
+/
+create or replace trigger tr_logon_audit
+after logon on schema
+begin
+    insert into event_audit values(
+    ora_sysevent,
+    sysdate,
+    TO_CHAR(sysdate, 'hh24:mi:ss'),
+    Null,
+    Null
+);
+commit;
+end;
+/
+select * from event_audit;
+/
+disc;
+/
+conn test/test123;
+/
